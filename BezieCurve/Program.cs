@@ -16,6 +16,10 @@ namespace BezieCurve
             game = new Game();
 
             rw.Closed += OnClose;
+            rw.KeyPressed += OnKey;
+            rw.MouseButtonPressed += MousePressed;
+            rw.MouseButtonReleased += MouseReleased;
+            rw.MouseMoved += MouseMoved;
 
             while (rw.IsOpen)
             {
@@ -29,6 +33,28 @@ namespace BezieCurve
         static void OnClose(object sender, EventArgs e)
         {
             (sender as RenderWindow)?.Close();
+        }
+
+        static void OnKey(object sender, KeyEventArgs e)
+        {
+            game.OnKeyPressed(sender, e);
+            if (e.Code == Keyboard.Key.Escape)
+                rw.Close();
+        }
+
+        static void MousePressed(object sender, MouseButtonEventArgs e)
+        {
+            game.OnMousePressed(sender, e);
+        }
+
+        static void MouseReleased(object sender, MouseButtonEventArgs e)
+        {
+            game.OnMouseReleased(sender, e);
+        }
+
+        static void MouseMoved(object sender, MouseMoveEventArgs e)
+        {
+            game.OnMouseMoved(sender, e);
         }
     }
 }
