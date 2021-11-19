@@ -13,9 +13,11 @@ namespace BezieCurve
         public List<Vector2f> points;
         float step = 0.01f;
         int pinned = -1;
+        List<float> distances;
 
         public Curve()
         {
+            distances = new List<float>();
             points = new List<Vector2f>();
         }
 
@@ -50,15 +52,19 @@ namespace BezieCurve
         public void Draw(RenderWindow rw, bool drawPoints)
         {
             CircleShape cs;
-            for (float i = 0f; i <= 1; i += step)
+            Vector2f pos = GetPoint(0f), lastPos;
+            float l = 0f;
+
+            for (float i = step; i <= 1; i += step)
             {
-                Vector2f pos = GetPoint(i);
-                cs = new CircleShape(5);
-                cs.Position = pos + new Vector2f(-2.5f, -2.5f);
-                rw.Draw(cs);
+                lastPos = pos;
+                pos = GetPoint(i);
+                l += lastPos.Distanse(pos);
+                distances.Add(l);
             }
 
-            if(drawPoints)
+            if (drawPoints)
+            {
                 foreach (Vector2f point in points)
                 {
                     cs = new CircleShape(10);
@@ -66,13 +72,14 @@ namespace BezieCurve
                     cs.FillColor = Color.Blue;
                     rw.Draw(cs);
                 }
+            }
         }
 
         public void MouseMoved(Vector2f pos)
         {
             if (pinned >= 0)
             {
-                points[pinned] = pos;
+                points[pinned] = pos + new Vector2f(-5, -5);
             }
         }
 
