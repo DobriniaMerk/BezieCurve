@@ -63,6 +63,11 @@ namespace BezieCurve
                 distances.Add(l);
             }
 
+            Font f = new Font("OpenSans-Regular.ttf");
+
+            Text t = new Text("" + l, f);
+            rw.Draw(t);
+
             if (drawPoints)
             {
                 foreach (Vector2f point in points)
