@@ -14,11 +14,13 @@ namespace BezieCurve
         float step = 0.01f;
         int pinned = -1;
         List<float> distances;
+        List<float> ts;
 
         public Curve()
         {
             distances = new List<float>();
             points = new List<Vector2f>();
+            ts = new List<float>();
         }
 
         public void AddPoint(float x, float y)
@@ -54,8 +56,9 @@ namespace BezieCurve
             CircleShape cs;
             Vector2f pos = GetPoint(0f), lastPos;
             float l = 0f;
+            distances = new List<float>();
 
-            for (float i = step; i <= 1; i += step)
+            for (float i = 0; i <= 1; i += step)
             {
                 lastPos = pos;
                 pos = GetPoint(i);
@@ -67,6 +70,21 @@ namespace BezieCurve
 
             Text t = new Text("" + l, f);
             rw.Draw(t);
+
+            for(float i = 0f; i < l; i += 5)
+            {
+                for(int j = 1; j < distances.Count; j++)
+                {
+                    if(distances[j] > i)
+                    {
+                        float ratio =  (i - distances[j - 1]) / (distances[j] - distances[j - 1]);
+                        cs = new CircleShape(6);
+                        cs.Position = GetPoint((j-1)*step + (step*ratio)) + new Vector2f(-3, -3);
+                        rw.Draw(cs);
+                        break;
+                    }
+                }
+            }
 
             if (drawPoints)
             {

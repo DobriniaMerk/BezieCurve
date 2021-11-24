@@ -16,10 +16,10 @@ namespace BezieCurve
 
         public Game()
         {
-            curve.AddPoint(400, 400);
-            curve.AddPoint(300, 270);
-            curve.AddPoint(530, 160);
-            curve.AddPoint(500, 300);
+            curve.AddPoint(6, 581);
+            curve.AddPoint(778, 384);
+            curve.AddPoint(624, 358);
+            curve.AddPoint(778, 583);
         }
 
         public void Draw(RenderWindow rw)
@@ -33,6 +33,12 @@ namespace BezieCurve
             {
                 case Keyboard.Key.D:
                     drawPoints = !drawPoints;
+                    break;
+                case Keyboard.Key.S:
+                    foreach(Vector2f v in curve.points)
+                    {
+                        Console.WriteLine(v.X + " " + v.Y);
+                    }
                     break;
             }
         }
