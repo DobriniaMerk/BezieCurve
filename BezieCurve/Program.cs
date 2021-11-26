@@ -12,7 +12,10 @@ namespace BezieCurve
         static void Main(string[] args)
         {
             VideoMode vm = new VideoMode(800, 600);
-            rw = new RenderWindow(vm, "Bezie");
+            rw = new RenderWindow(vm, "Bezie", Styles.Resize, new ContextSettings(32, 32, 8));
+
+            
+            
             game = new Game();
 
             rw.Closed += OnClose;

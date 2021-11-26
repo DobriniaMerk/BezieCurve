@@ -12,7 +12,10 @@ namespace BezieCurve
     {
         public List<Vector2f> points;
         float step = 0.01f;
+        float lstep = 20f;
         int pinned = -1;
+        float displacement = 0f;
+        float t = 0f;
         List<float> distances;
         List<float> ts;
 
@@ -51,39 +54,50 @@ namespace BezieCurve
             }
         }
 
-        public void Draw(RenderWindow rw, bool drawPoints)
+        public void Draw(RenderWindow rw, bool drawPoints, bool newDisplay)
         {
             CircleShape cs;
             Vector2f pos = GetPoint(0f), lastPos;
             float l = 0f;
             distances = new List<float>();
 
-            for (float i = 0; i <= 1; i += step)
+            if (newDisplay)
             {
-                lastPos = pos;
-                pos = GetPoint(i);
-                l += lastPos.Distanse(pos);
-                distances.Add(l);
-            }
-
-            Font f = new Font("OpenSans-Regular.ttf");
-
-            Text t = new Text("" + l, f);
-            rw.Draw(t);
-
-            for(float i = 0f; i < l; i += 5)
-            {
-                for(int j = 1; j < distances.Count; j++)
+                for (float i = 0; i <= 1; i += step)
                 {
-                    if(distances[j] > i)
+                    lastPos = pos;
+                    pos = GetPoint(i);
+                    l += lastPos.Distanse(pos);
+                    distances.Add(l);
+                }
+
+                displacement += lstep / 200;
+                if (displacement >= lstep)
+                    displacement = 0f;
+
+                for (float i = displacement; i < l; i += lstep)
+                {
+                    for (int j = 1; j < distances.Count; j++)
                     {
-                        float ratio =  (i - distances[j - 1]) / (distances[j] - distances[j - 1]);
-                        cs = new CircleShape(6);
-                        cs.Position = GetPoint((j-1)*step + (step*ratio)) + new Vector2f(-3, -3);
-                        rw.Draw(cs);
-                        break;
+                        if (distances[j] > i)
+                        {
+                            float ratio = (i - distances[j - 1]) / (distances[j] - distances[j - 1]);
+                            cs = new CircleShape(6);
+                            cs.Position = GetPoint((j - 1) * step + (step * ratio)) + new Vector2f(-3, -3);
+                            rw.Draw(cs);
+                            break;
+                        }
                     }
                 }
+            } else
+            {
+                t += step / 60;
+                if (t >= 1)
+                    t = 0f;
+
+                cs = new CircleShape(5);
+                cs.Position = GetPoint(t) + new Vector2f(-2.5f, -2.5f);
+                rw.Draw(cs);
             }
 
             if (drawPoints)

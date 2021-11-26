@@ -13,6 +13,7 @@ namespace BezieCurve
     {
         Curve curve = new Curve();
         bool drawPoints = true;
+        bool newDisplay = true;
 
         public Game()
         {
@@ -24,14 +25,14 @@ namespace BezieCurve
 
         public void Draw(RenderWindow rw)
         {
-            curve.Draw(rw, drawPoints);
+            curve.Draw(rw, drawPoints, newDisplay);
         }
 
         public void OnKeyPressed(object sender, KeyEventArgs e)
         {
             switch(e.Code)
             {
-                case Keyboard.Key.D:
+                case Keyboard.Key.P:
                     drawPoints = !drawPoints;
                     break;
                 case Keyboard.Key.S:
@@ -39,6 +40,10 @@ namespace BezieCurve
                     {
                         Console.WriteLine(v.X + " " + v.Y);
                     }
+                    break;
+                case Keyboard.Key.D:
+                    newDisplay = !newDisplay;
+                    Console.WriteLine(newDisplay);
                     break;
             }
         }
