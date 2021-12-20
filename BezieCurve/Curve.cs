@@ -12,11 +12,18 @@ namespace BezieCurve
     {
         public List<Vector2f> points;
         float step = 0.01f;
+        float lstep = 20f;
         int pinned = -1;
+        float displacement = 0f;
+        float t = 0f;
+        List<float> distances;
+        List<float> ts;
 
         public Curve()
         {
+            distances = new List<float>();
             points = new List<Vector2f>();
+            ts = new List<float>();
         }
 
         public void AddPoint(float x, float y)
@@ -47,18 +54,54 @@ namespace BezieCurve
             }
         }
 
-        public void Draw(RenderWindow rw, bool drawPoints)
+        public void Draw(RenderWindow rw, bool drawPoints, bool newDisplay)
         {
             CircleShape cs;
-            for (float i = 0f; i <= 1; i += step)
+            Vector2f pos = GetPoint(0f), lastPos;
+            float l = 0f;
+            distances = new List<float>();
+
+            if (newDisplay)
             {
-                Vector2f pos = GetPoint(i);
+                for (float i = 0; i <= 1; i += step)
+                {
+                    lastPos = pos;
+                    pos = GetPoint(i);
+                    l += lastPos.Distanse(pos);
+                    distances.Add(l);
+                }
+
+                displacement += lstep / 200;
+                if (displacement >= lstep)
+                    displacement = 0f;
+
+                for (float i = displacement; i < l; i += lstep)
+                {
+                    for (int j = 1; j < distances.Count; j++)
+                    {
+                        if (distances[j] > i)
+                        {
+                            float ratio = (i - distances[j - 1]) / (distances[j] - distances[j - 1]);
+                            cs = new CircleShape(6);
+                            cs.Position = GetPoint((j - 1) * step + (step * ratio)) + new Vector2f(-3, -3);
+                            rw.Draw(cs);
+                            break;
+                        }
+                    }
+                }
+            } else
+            {
+                t += step / 60;
+                if (t >= 1)
+                    t = 0f;
+
                 cs = new CircleShape(5);
-                cs.Position = pos + new Vector2f(-2.5f, -2.5f);
+                cs.Position = GetPoint(t) + new Vector2f(-2.5f, -2.5f);
                 rw.Draw(cs);
             }
 
-            if(drawPoints)
+            if (drawPoints)
+            {
                 foreach (Vector2f point in points)
                 {
                     cs = new CircleShape(10);
@@ -66,13 +109,14 @@ namespace BezieCurve
                     cs.FillColor = Color.Blue;
                     rw.Draw(cs);
                 }
+            }
         }
 
         public void MouseMoved(Vector2f pos)
         {
             if (pinned >= 0)
             {
-                points[pinned] = pos;
+                points[pinned] = pos + new Vector2f(-5, -5);
             }
         }
 
